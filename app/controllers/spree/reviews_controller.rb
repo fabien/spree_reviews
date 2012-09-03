@@ -9,12 +9,12 @@ class Spree::ReviewsController < Spree::BaseController
 
   def new
     @review = Spree::Review.new(:product => @product)
-    authorize! :new, @review
+    authorize! :create, @review
   end
 
   # save if all ok
   def create
-    params[:review][:rating].sub!(/\s*stars/,'') unless params[:review][:rating].blank?
+    params[:review][:rating].sub!(/\s*[^0-9]*$/,'') unless params[:review][:rating].blank?
 
     @review = Spree::Review.new(params[:review])
     @review.product = @product
@@ -37,8 +37,8 @@ class Spree::ReviewsController < Spree::BaseController
 
   private
 
-    def load_product
-      @product = Spree::Product.find_by_permalink!(params[:product_id])
-    end
+  def load_product
+    @product = Spree::Product.find_by_permalink!(params[:product_id])
+  end
 
 end
